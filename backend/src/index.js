@@ -2,6 +2,7 @@ import e from "express";
 import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
 import path from "path";
+import cors from "cors";
 
 import userRoutes from "./routes/user.route.js";
 import adminRoutes from "./routes/admin.route.js";
@@ -21,6 +22,12 @@ const PORT = process.env.PORT;
 const __dirname = path.resolve();
 
 app.use(e.json());
+app.use(
+  cors({
+    origin: [process.env.FRONTEND_URL],
+    credentials: true,
+  })
+);
 app.use(clerkMiddleware());
 app.use(
   fileUpload({
