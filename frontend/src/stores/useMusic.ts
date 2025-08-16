@@ -11,6 +11,12 @@ interface MusicStore {
   fetchAlbums: () => Promise<void>;
   fetchSongs: () => Promise<void>;
   fetchAlbumById: (id: string) => Promise<void>;
+  fetchFeaturedSongs: () => Promise<void>;
+  fetchMadeForYouSongs: () => Promise<void>;
+  fetchTrendingSongs: () => Promise<void>;
+  madeForYouSongs: Song[];
+  trendingSongs: Song[];
+  featuredSongs: Song[];
 }
 
 export const useMusic = create<MusicStore>((set) => ({
@@ -19,6 +25,9 @@ export const useMusic = create<MusicStore>((set) => ({
   currentAlbum: null,
   isLoading: false,
   error: null,
+  madeForYouSongs: [],
+  trendingSongs: [],
+  featuredSongs: [],
   fetchAlbums: async () => {
     set({ isLoading: true });
     try {
@@ -46,6 +55,39 @@ export const useMusic = create<MusicStore>((set) => ({
     try {
       const response = await api.get(`/albums/${id}`);
       set({ currentAlbum: response.data });
+    } catch (error) {
+      set({ error: (error as Error).message });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  fetchFeaturedSongs: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await api.get("/songs/featured");
+      set({ featuredSongs: response.data });
+    } catch (error) {
+      set({ error: (error as Error).message });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  fetchMadeForYouSongs: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await api.get("/songs/made-for-you");
+      set({ madeForYouSongs: response.data });
+    } catch (error) {
+      set({ error: (error as Error).message });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  fetchTrendingSongs: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await api.get("/songs/trending");
+      set({ trendingSongs: response.data });
     } catch (error) {
       set({ error: (error as Error).message });
     } finally {
