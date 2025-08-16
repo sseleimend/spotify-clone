@@ -1,7 +1,8 @@
 import api from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth as useClerkAuth } from "@clerk/clerk-react";
+import useAuth from "@/stores/useAuth";
 
 const updateApiToken = (token: string | null) => {
   if (token) api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -9,14 +10,18 @@ const updateApiToken = (token: string | null) => {
 };
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const { getToken } = useAuth();
+  const { getToken } = useClerkAuth();
   const [loading, setLoading] = useState(true);
+  const { checkAdminStatus } = useAuth();
 
   useEffect(() => {
     const initAuth = async () => {
       try {
         const token = await getToken();
         updateApiToken(token);
+        if (token) {
+          await checkAdminStatus();
+        }
       } catch (error) {
         updateApiToken(null);
         console.error("Error initializing auth:", error);
@@ -26,7 +31,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     initAuth();
-  }, [getToken]);
+  }, [checkAdminStatus, getToken]);
 
   if (loading)
     return (
