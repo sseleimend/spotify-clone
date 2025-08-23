@@ -17,11 +17,11 @@ router.use(protectRoute, requireAdmin);
 router.get("/check", checkAdmin);
 
 // Songs
-router.get("/songs", createSong);
+router.post("/songs", createSong);
 router.delete("/songs/:id", deleteSong);
 
 // Albums
-router.get("/albums", createAlbum);
+router.post("/albums", createAlbum);
 router.delete("/albums/:id", deleteAlbum);
 
 export default router;
