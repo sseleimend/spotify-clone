@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
 import path from "path";
 import cors from "cors";
+import cron from "node-cron";
+import fs from "fs";
 
 import userRoutes from "./routes/user.route.js";
 import adminRoutes from "./routes/admin.route.js";
@@ -44,6 +46,26 @@ app.use(
     },
   })
 );
+
+const tempDir = path.join(process.cwd(), "tmp");
+cron.schedule("0 * * * *", () => {
+  if (fs.existsSync(tempDir)) {
+    fs.readdir(tempDir, (err, files) => {
+      if (err) {
+        console.error("Failed to read temp directory:", err);
+        return;
+      }
+      files.forEach((file) => {
+        const filePath = path.join(tempDir, file);
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error("Failed to delete file:", err);
+          }
+        });
+      });
+    });
+  }
+});
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
