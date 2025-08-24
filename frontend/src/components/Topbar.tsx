@@ -1,13 +1,11 @@
 import {
-  SignedIn,
   SignedOut,
-  SignOutButton,
   UserButton,
 } from "@clerk/clerk-react";
 import { LayoutDashboardIcon } from "lucide-react";
 import { Link } from "react-router";
 import { SignInOAuthButtons } from "./SignInOAuthButtons";
-import { Button, buttonVariants } from "./ui/button";
+import { buttonVariants } from "./ui/button";
 import useAuth from "@/stores/useAuth";
 import { cn } from "@/lib/utils";
 
