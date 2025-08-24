@@ -7,7 +7,7 @@ interface ChatStore {
   users: User[];
   fetchUsers: () => Promise<void>;
   isLoading: boolean;
-  socket: Socket | null;
+  socket: Socket;
   isConnected: boolean;
   onlineUsers: Set<string>;
   userActivities: Map<string, string>;
@@ -31,7 +31,7 @@ const socket = io(baseURL, {
 export const useChat = create<ChatStore>((set, get) => ({
   users: [],
   isLoading: false,
-  socket: null,
+  socket: socket,
   isConnected: false,
   onlineUsers: new Set(),
   userActivities: new Map(),
@@ -97,13 +97,13 @@ export const useChat = create<ChatStore>((set, get) => ({
         }));
       });
 
-      set({ isConnected: true, socket });
+      set({ isConnected: true });
     }
   },
   disconnectSocket: () => {
     if (get().isConnected) {
       socket.disconnect();
-      set({ isConnected: false, socket: null });
+      set({ isConnected: false });
     }
   },
   sendMessage: (senderId, receiverId, content) => {
