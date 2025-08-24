@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import { useAuth as useClerkAuth } from "@clerk/clerk-react";
 import useAuth from "@/stores/useAuth";
+import { useChat } from "@/stores/useChat";
 
 const updateApiToken = (token: string | null) => {
   if (token) api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -10,9 +11,10 @@ const updateApiToken = (token: string | null) => {
 };
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const { getToken } = useClerkAuth();
+  const { getToken, userId } = useClerkAuth();
   const [loading, setLoading] = useState(true);
   const { checkAdminStatus } = useAuth();
+  const { initSocket, disconnectSocket } = useChat();
 
   useEffect(() => {
     const initAuth = async () => {
@@ -21,6 +23,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         updateApiToken(token);
         if (token) {
           await checkAdminStatus();
+          initSocket(userId!);
         }
       } catch (error) {
         updateApiToken(null);
@@ -31,7 +34,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     initAuth();
-  }, [checkAdminStatus, getToken]);
+
+    return () => {
+      disconnectSocket();
+    };
+  }, [checkAdminStatus, disconnectSocket, getToken, initSocket, userId]);
 
   if (loading)
     return (
