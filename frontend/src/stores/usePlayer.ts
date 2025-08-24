@@ -36,7 +36,7 @@ export const usePlayer = create<PlayerStore>((set, get) => ({
     const socket = useChat.getState().socket;
     if (socket.auth) {
       socket.emit("update_activity", {
-        userId: socket.auth.userId,
+        userId: (socket.auth as { userId: string }).userId,
         activity: `Playing ${song.title} by ${song.artist}`,
       });
     }
@@ -54,7 +54,7 @@ export const usePlayer = create<PlayerStore>((set, get) => ({
     const socket = useChat.getState().socket;
     if (socket.auth) {
       socket.emit("update_activity", {
-        userId: socket.auth.userId,
+        userId: (socket.auth as { userId: string }).userId,
         activity: `Playing ${song.title} by ${song.artist}`,
       });
     }
@@ -73,7 +73,7 @@ export const usePlayer = create<PlayerStore>((set, get) => ({
 
     if (socket.auth) {
       socket.emit("update_activity", {
-        userId: socket.auth.userId,
+        userId: (socket.auth as { userId: string }).userId,
         activity:
           willStartPlaying && currentSong
             ? `Playing ${currentSong.title} by ${currentSong.artist}`
@@ -90,7 +90,7 @@ export const usePlayer = create<PlayerStore>((set, get) => ({
       const socket = useChat.getState().socket;
       if (socket.auth) {
         socket.emit("update_activity", {
-          userId: socket.auth.userId,
+          userId: (socket.auth as { userId: string }).userId,
           activity: `Playing ${state.queue[nextIndex].title} by ${state.queue[nextIndex].artist}`,
         });
       }
@@ -109,7 +109,7 @@ export const usePlayer = create<PlayerStore>((set, get) => ({
       const socket = useChat.getState().socket;
       if (socket.auth) {
         socket.emit("update_activity", {
-          userId: socket.auth.userId,
+          userId: (socket.auth as { userId: string }).userId,
           activity: `Playing ${state.queue[prevIndex].title} by ${state.queue[prevIndex].artist}`,
         });
       }
