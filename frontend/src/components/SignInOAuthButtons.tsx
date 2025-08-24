@@ -22,6 +22,7 @@ export const SignInOAuthButtons = () => {
       className="px-4 py-2"
       onClick={signInWithGoogle}
     >
+      <img src="/google.png" alt="Google" className="size-5" />
       Continue with Google
     </Button>
   );
