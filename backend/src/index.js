@@ -12,6 +12,8 @@ import albumRoutes from "./routes/album.route.js";
 import statsRoutes from "./routes/stats.route.js";
 import { connectDB } from "./lib/db.js";
 import { clerkMiddleware } from "@clerk/express";
+import { createServer } from "http";
+import { initSocket } from "./lib/socket.js";
 
 dotenv.config();
 
@@ -20,6 +22,9 @@ const app = e();
 const PORT = process.env.PORT;
 
 const __dirname = path.resolve();
+
+const httpServer = createServer(app);
+initSocket(httpServer);
 
 app.use(e.json());
 app.use(
@@ -58,7 +63,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   connectDB();
 });
